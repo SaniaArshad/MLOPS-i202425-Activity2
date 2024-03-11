@@ -11,7 +11,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    sh 'python -m pip install -r requirements.txt'
+                    bat 'pip3 install -r requirements.txt'
                 }
             }
         }
@@ -19,7 +19,7 @@ pipeline {
         stage('Execute Test') {
             steps {
                 script {
-                    sh 'python test.py'
+                    bat 'python test.py'
                 }
             }
         }
