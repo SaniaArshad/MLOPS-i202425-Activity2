@@ -1,5 +1,6 @@
 pipeline {
     agent any
+
     stages {
         stage ('Checkout') {
             steps {
@@ -7,34 +8,32 @@ pipeline {
             }
         }
 
-        stage ('Installing Dependencies') {
-            steps {
-                sh "pip3 install -r requirements.txt"
-            }
-        }
-
-        stage ('Testing') {
-            steps {
-                sh "python3 test.py"
-            }
-        }
-
-        stage ('Deploy') {
+        stage('Install Dependencies') {
             steps {
                 script {
-                    def branchName = "${env.BRANCH_NAME}"
-                    deploy(branchName)
-                    
+                    sh 'python -m pip install -r requirements.txt'
+                }
+            }
+        }
+
+        stage('Execute Test') {
+            steps {
+                script {
+                    sh 'python test.py'
+                }
+            }
+        }
+
+        stage('Deploying') {
+            steps {
+                script {
+                    if (env.BRANCH_NAME == 'main') {
+                        echo 'Deploying to production'
+                    } else {
+                        echo 'Deploying to UAT'
+                    }
                 }
             }
         }
     }
-}
-
-def void deploy(String branchName) {
-    if (branchName == 'main') {
-                        println("Deploying to production")
-                    } else if (brancheName == 'dev') {
-                        println("Deploying to UAT.")
-                    }
 }
